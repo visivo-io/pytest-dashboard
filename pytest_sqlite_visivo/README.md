@@ -1,0 +1,1 @@
+This folder is an example of a fully functional pipline to store, transform and visualize pytest results utilizing visivo.
