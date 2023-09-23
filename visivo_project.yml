@@ -1,0 +1,32 @@
+name: pytest_monitoring
+
+defaults:
+  target_name: Example Target
+
+targets:
+  - name: Example Target
+    type: snowflake
+    database: raw
+    db_schema: webhooks
+    username: JaredVisivo
+    password: {{ env_var('DB_PASSWORD') }}
+    account: {{ env_var('SNOWFLAKE_ACCOUNT')}}
+    warehouse: DEV
+includes:
+  - path: visivo/models.yml    
+  - path: visivo/traces.yml
+charts:
+  - name: tests_ran_per_day 
+    traces:
+      - ref(passed_tests_ran_per_day)
+      - ref(total_tests_ran_per_day)
+    layout: {}
+
+dashboards:
+- name: Pytest Results
+  rows:
+  - height: medium
+    items:
+    - width: 1
+      chart: ref(tests_ran_per_day)
+

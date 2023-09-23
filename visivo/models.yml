@@ -1,0 +1,10 @@
+models:
+  - name: test_runs
+    sql: |
+      SELECT 
+        _created as created_at,
+        parse_json(summary)['collected'] as collected,
+        parse_json(summary)['failed'] as failed,
+        parse_json(summary)['passed'] as passed,
+        parse_json(summary)['total'] as total
+      FROM pytest_results

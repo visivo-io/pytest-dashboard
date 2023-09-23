@@ -1,0 +1,22 @@
+traces:
+  - name: total_tests_ran_per_day
+    model: ref(test_runs)
+    cohort_on: "'Tests'"
+    columns:
+      total_runs: SUM(total)
+      day: date_trunc('day', created_at::date)::date::varchar
+    props:
+      type: bar
+      x: column(day)
+      y: column(total_runs)
+  - name: passed_tests_ran_per_day
+    model: ref(test_runs)
+    cohort_on: "'Passed'"
+    columns:
+      total_pass: SUM(passed)
+      day: date_trunc('day', created_at::date)::date::varchar
+    props:
+      type: scatter
+      x: column(day)
+      y: column(total_pass)    
+
