@@ -18,5 +18,19 @@ traces:
     props:
       type: scatter
       x: column(day)
-      y: column(total_pass)    
-
+      y: column(total_pass)
+  - name: avg_run_time_per_day
+    model: ref(test_runs)
+    cohort_on: "'Passed'"
+    columns:
+      test_run_duration: avg(duration)
+      test_run_duration_label_ms: round(avg(duration)*1000) || ' ms'
+      day: date_trunc('day', created_at::date)::date::varchar
+    props:
+      type: bar
+      x: column(day)
+      y: column(test_run_duration)
+      text: column(test_run_duration_label_ms)
+      hoverinfo: x+text
+      textposition: inside
+      

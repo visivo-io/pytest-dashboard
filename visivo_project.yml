@@ -9,8 +9,8 @@ targets:
     database: raw
     db_schema: webhooks
     username: JaredVisivo
-    password: {{ env_var('DB_PASSWORD') }}
-    account: {{ env_var('SNOWFLAKE_ACCOUNT')}}
+    password: "{{ env_var('DB_PASSWORD') }}"
+    account: "{{ env_var('SNOWFLAKE_ACCOUNT')}}"
     warehouse: DEV
 includes:
   - path: visivo/models.yml    
@@ -20,7 +20,21 @@ charts:
     traces:
       - ref(passed_tests_ran_per_day)
       - ref(total_tests_ran_per_day)
-    layout: {}
+    layout: 
+      title: Test Results
+      yaxis:
+        title: Count of Unit Tests
+      xaxis: 
+        title: Date
+  - name: tests_run_duration_day 
+    traces:
+      - ref(avg_run_time_per_day)
+    layout:
+      title: Test Run Duration 
+      xaxis: 
+        title: Date 
+      yaxis: 
+        title: Seconds
 
 dashboards:
 - name: Pytest Results
@@ -29,4 +43,5 @@ dashboards:
     items:
     - width: 1
       chart: ref(tests_ran_per_day)
-
+    - width: 1
+      chart: ref(tests_run_duration_day)

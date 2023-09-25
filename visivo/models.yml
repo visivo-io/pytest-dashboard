@@ -3,6 +3,7 @@ models:
     sql: |
       SELECT 
         _created as created_at,
+        duration,
         parse_json(summary)['collected'] as collected,
         parse_json(summary)['failed'] as failed,
         parse_json(summary)['passed'] as passed,
