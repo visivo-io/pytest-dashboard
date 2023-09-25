@@ -35,13 +35,61 @@ charts:
         title: Date 
       yaxis: 
         title: Seconds
+  - name: passing_tests_big_number
+    traces: 
+      - ref(passing_tests_big_number_last_7_days)
+  - name: test_run_duration_big_number
+    traces: 
+      - ref(test_run_duration_big_number_last_7_days)
+
+  - name: total_test_runs_big_number
+    traces: 
+      - ref(total_test_runs_last_7_days)
+  
+  - name: tests_aggregates_last_7_days_chart
+    traces: 
+      - ref(tests_aggregates_last_7_days)
+      - ref(tests_aggregates_passed_last_7_days)
+
+tables:
+  - name: tests_last_7_days_table
+    trace: ref(tests_last_7_days)
+    columns: 
+      - header: "Test Run ID"
+        column: "Test Run ID"
+      - header: "Test Run Started"
+        column: "Test Run Started"
+      - header: "Test Duration"
+        column: "Test Duration"
+      - header: "Outcome"
+        column: "Outcome"
+      - header: "Test Name"
+        column: "Test Name"
+
 
 dashboards:
 - name: Pytest Results
   rows:
+  - height: small
+    items:
+      - width: 1
+        chart: ref(passing_tests_big_number)
+      - width: 1
+        chart: ref(test_run_duration_big_number)
+      - width: 1
+        chart: ref(total_test_runs_big_number)
   - height: medium
     items:
     - width: 1
       chart: ref(tests_ran_per_day)
     - width: 1
       chart: ref(tests_run_duration_day)
+  - height: small 
+    items:
+    - width: 1
+      chart: ref(tests_aggregates_last_7_days_chart)
+
+  - height: large
+    items:
+    - width: 1
+      table: ref(tests_last_7_days_table)
