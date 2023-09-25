@@ -1,0 +1,28 @@
+models:
+  - name: test_runs
+    sql: |
+      SELECT 
+        _id as test_run_id,
+        _created as created_at,
+        duration,
+        parse_json(summary)['collected'] as collected,
+        parse_json(summary)['failed'] as failed,
+        parse_json(summary)['passed'] as passed,
+        parse_json(summary)['total'] as total
+      FROM pytest_results
+  
+  - name: test_results
+    sql: "SELECT 
+        pr.duration as test_run_duration, 
+        pr._created as test_run_started_at,
+        pr._id as test_run_id, 
+        md5(pr._id || r.value:nodeid::varchar) as id,
+        r.value:call:duration::float as call_duration_sec, 
+        r.value:setup:duration::float as setup_duration_sec, 
+        r.value:teardown:duration::float as teardown_duration_sec,
+        call_duration_sec + setup_duration_sec + teardown_duration_sec as total_duration_sec,
+        r.value:call:outcome::varchar as  call_outcome,
+        CASE WHEN call_outcome = 'passed' THEN 1 else 0 END as passed_flag,
+        r.value:keywords[0]::varchar as test_name
+      FROM raw.webhooks.pytest_results pr 
+      , lateral flatten(input => pr.tests) as r"

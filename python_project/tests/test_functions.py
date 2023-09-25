@@ -1,4 +1,4 @@
-from pytest_sqlite_visivo.functions import add_one, remove_all_u
+from python_project.functions import add_one, remove_all_u
 
 def test_add_one_valid():
     assert 2 == add_one(1)
@@ -8,3 +8,6 @@ def test_add_one_invalid():
 
 def test_remove_all_u_invalid():
     assert "Mst Think of Wrds wth 's" == remove_all_u("Must Think of Wurds wuth U's")
+
+def test_add_one_twice_valid():
+    assert 3 == add_one(add_one(1))

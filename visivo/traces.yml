@@ -1,0 +1,108 @@
+traces:
+  - name: total_tests_ran_per_day
+    model: ref(test_runs)
+    cohort_on: "'Tests'"
+    columns:
+      total_runs: SUM(total)
+      day: date_trunc('day', created_at::date)::date::varchar
+    props:
+      type: bar
+      x: column(day)
+      y: column(total_runs)
+  - name: passed_tests_ran_per_day
+    model: ref(test_runs)
+    cohort_on: "'Passed'"
+    columns:
+      total_pass: SUM(passed)
+      day: date_trunc('day', created_at::date)::date::varchar
+    props:
+      type: scatter
+      x: column(day)
+      y: column(total_pass)
+  - name: avg_run_time_per_day
+    model: ref(test_runs)
+    cohort_on: "'Passed'"
+    columns:
+      test_run_duration: avg(duration)
+      test_run_duration_label_ms: round(avg(duration)*1000) || ' ms'
+      day: date_trunc('day', created_at::date)::date::varchar
+    props:
+      type: bar
+      x: column(day)
+      y: column(test_run_duration)
+      text: column(test_run_duration_label_ms)
+      hoverinfo: x+text
+      textposition: inside
+  - name: passing_tests_big_number_last_7_days
+    model: ref(test_runs)
+    columns:
+      avg_tests_passing: sum(passed) / sum(total)
+    props:
+      type: indicator
+      title: 
+        text: "<b>Test Pass Rate</b><br><sub>Trailing 7 Days</sub>"
+      value: column(avg_tests_passing)[0]
+      number:
+        valueformat: ".1%"
+    filters:
+      - query( datediff(day, created_at::date, sysdate()::date) <= 7 )
+  - name: test_run_duration_big_number_last_7_days
+    model: ref(test_runs)
+    columns:
+      avg_test_run_duration: round(avg(duration)*1000, 2)
+    props:
+      type: indicator
+      title: 
+        text: "<b>Test Run Duration</b><br><sub>Trailing 7 Days</sub>"
+      value: column(avg_test_run_duration)[0]
+      number:
+        suffix: " ms"
+    filters:
+      - query( datediff(day, created_at::date, sysdate()::date) <= 7 )
+  
+  - name: total_test_runs_last_7_days
+    model: ref(test_runs)
+    columns:
+      test_run_count: Count(distinct test_run_id)
+    props:
+      type: indicator
+      title: 
+        text: "<b>Test Runs</b><br><sub>Trailing 7 Days</sub>"
+      value: column(test_run_count)[0]
+    filters:
+      - query( datediff(day, created_at::date, sysdate()::date) <= 7 )
+    
+  - name: tests_last_7_days
+    model: ref(test_results)
+    columns:
+      "Test Run ID": test_run_id
+      "Test Run Started": test_run_started_at
+      "Test Duration": total_duration_sec
+      "Outcome": call_outcome
+      "Test Name": test_name
+    filters:
+      - query( datediff(day, test_run_started_at::date, sysdate()::date) <= 7 )
+  
+  - name: tests_aggregates_passed_last_7_days
+    model: ref(test_results)
+    cohort_on: "'Passed'"
+    props:
+      type: bar
+      x: query( test_name )
+      y: query( SUM(passed_flag) )
+    filters:
+      - query( datediff(day, test_run_started_at::date, sysdate()::date) <= 7 )
+    order_by: 
+      - query( SUM(passed_flag) desc )
+
+  - name: tests_aggregates_last_7_days
+    model: ref(test_results)
+    cohort_on: "'Runs'"
+    props:
+      type: bar
+      x: query( test_name )
+      y: query( COUNT(*) )
+    filters:
+      - query( datediff(day, test_run_started_at::date, sysdate()::date) <= 7 )
+    order_by: 
+      - query( count(*) desc )
