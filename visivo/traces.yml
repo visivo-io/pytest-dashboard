@@ -80,6 +80,10 @@ traces:
       "Test Duration": total_duration_sec
       "Outcome": call_outcome
       "Test Name": test_name
+    props:
+      type: scatter
+      x: column(Test Run Started)
+      y: column(Test Duration)
     filters:
       - query( datediff(day, test_run_started_at::date, sysdate()::date) <= 7 )
   

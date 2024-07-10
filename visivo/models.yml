@@ -9,7 +9,7 @@ models:
         parse_json(summary)['failed'] as failed,
         parse_json(summary)['passed'] as passed,
         parse_json(summary)['total'] as total
-      FROM pytest_results
+      FROM {{ env_var('PYTEST_TABLE') }}
   
   - name: test_results
     sql: "SELECT 
@@ -24,5 +24,5 @@ models:
         r.value:call:outcome::varchar as  call_outcome,
         CASE WHEN call_outcome = 'passed' THEN 1 else 0 END as passed_flag,
         r.value:keywords[0]::varchar as test_name
-      FROM raw.webhooks.pytest_results pr 
+      FROM {{env_var('PYTEST_TABLE')}} pr 
       , lateral flatten(input => pr.tests) as r"
