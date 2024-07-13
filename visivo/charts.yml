@@ -1,0 +1,41 @@
+charts:
+  - name: tests_ran_per_day 
+    traces:
+      - ref(passed_tests_ran_per_day)
+      - ref(total_tests_ran_per_day)
+    layout: 
+      title: 
+        text: Test Results
+      yaxis:
+        title: 
+          text: Count of Unit Tests
+      xaxis: 
+        title: 
+          text: Date
+  - name: tests_run_duration_day 
+    traces:
+      - ref(avg_run_time_per_day)
+    layout:
+      title: 
+        text: Test Run Duration 
+      xaxis: 
+        title: 
+          text: Date 
+      yaxis: 
+        title: 
+          text: Seconds
+  - name: passing_tests_big_number
+    traces: 
+      - ref(passing_tests_big_number_last_7_days)
+  - name: test_run_duration_big_number
+    traces: 
+      - ref(test_run_duration_big_number_last_7_days)
+
+  - name: total_test_runs_big_number
+    traces: 
+      - ref(total_test_runs_last_7_days)
+  
+  - name: tests_aggregates_last_7_days_chart
+    traces: 
+      - ref(tests_aggregates_last_7_days)
+      - ref(tests_aggregates_passed_last_7_days)
