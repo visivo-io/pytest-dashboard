@@ -9,6 +9,8 @@ traces:
       type: bar
       x: column(day)
       y: column(total_runs)
+    order_by:
+      - query(date_trunc('day', created_at::date)::date)
   - name: passed_tests_ran_per_day
     model: ref(test_runs)
     cohort_on: "'Passed'"
@@ -19,6 +21,8 @@ traces:
       type: scatter
       x: column(day)
       y: column(total_pass)
+    order_by:
+      - query(date_trunc('day', created_at::date)::date)
   - name: avg_run_time_per_day
     model: ref(test_runs)
     cohort_on: "'Passed'"
