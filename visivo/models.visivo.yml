@@ -10,9 +10,11 @@ models:
         parse_json(summary)['passed'] as passed,
         parse_json(summary)['total'] as total
       FROM {{ env_var('PYTEST_TABLE') }}
+    
   
   - name: test_results
-    sql: "SELECT 
+    sql: |
+      SELECT 
         pr.duration as test_run_duration, 
         pr._created as test_run_started_at,
         pr._id as test_run_id, 
@@ -25,4 +27,4 @@ models:
         CASE WHEN call_outcome = 'passed' THEN 1 else 0 END as passed_flag,
         r.value:keywords[0]::varchar as test_name
       FROM {{env_var('PYTEST_TABLE')}} pr 
-      , lateral flatten(input => pr.tests) as r"
+      , lateral flatten(input => pr.tests) as r

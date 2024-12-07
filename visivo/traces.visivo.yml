@@ -28,13 +28,13 @@ traces:
     cohort_on: "'Passed'"
     columns:
       test_run_duration: avg(duration)
-      test_run_duration_label_ms: round(avg(duration)*1000) || ' ms'
+      test_run_duration_label_s: round(avg(duration), 2) || ' s'
       day: date_trunc('day', created_at::date)::date::varchar
     props:
       type: bar
       x: column(day)
       y: column(test_run_duration)
-      text: column(test_run_duration_label_ms)
+      text: column(test_run_duration_label_s)
       hoverinfo: x+text
       textposition: inside
   - name: passing_tests_big_number_last_7_days
@@ -53,14 +53,14 @@ traces:
   - name: test_run_duration_big_number_last_7_days
     model: ref(test_runs)
     columns:
-      avg_test_run_duration: round(avg(duration)*1000, 2)
+      avg_test_run_duration: round(avg(duration), 2)
     props:
       type: indicator
       title: 
         text: "<b>Test Run Duration</b><br><sub>Trailing 7 Days</sub>"
       value: column(avg_test_run_duration)[0]
       number:
-        suffix: " ms"
+        suffix: " s"
     filters:
       - query( datediff(day, created_at::date, sysdate()::date) <= 7 )
   
