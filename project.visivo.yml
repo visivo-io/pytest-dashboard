@@ -1,9 +1,9 @@
 name: pytest_monitoring
 
 defaults:
-  target_name: "{{ env_var('PYTEST_TARGET') }}"
+  source_name: "{{ env_var('PYTEST_TARGET') }}"
 
-targets:
+sources:
   - name: remote-snowflake
     type: snowflake
     database: "{{env_var('PYTEST_DATABASE')}}" 
@@ -15,14 +15,14 @@ targets:
     role: "{{env_var('PYTEST_ROLE')}}"
 
 includes:
-  - path: visivo/models.yml    
-  - path: visivo/traces.yml
-  - path: visivo/charts.yml
+  - path: visivo/models.visivo.yml    
+  - path: visivo/traces.visivo.yml
+  - path: visivo/charts.visivo.yml
 
 tables:
   - name: tests_last_7_days_table
     traces: 
-      - ref(tests_last_7_days)
+      - ${ref(tests_last_7_days)}
 
 dashboards:
 - name: Pytest Results
@@ -30,23 +30,23 @@ dashboards:
   - height: small
     items:
       - width: 1
-        chart: ref(passing_tests_big_number)
+        chart: ${ref(passing_tests_big_number)}
       - width: 1
-        chart: ref(test_run_duration_big_number)
+        chart: ${ref(test_run_duration_big_number)}
       - width: 1
-        chart: ref(total_test_runs_big_number)
+        chart: ${ref(total_test_runs_big_number)}
   - height: medium
     items:
     - width: 1
-      chart: ref(tests_ran_per_day)
+      chart: ${ref(tests_ran_per_day)}
     - width: 1
-      chart: ref(tests_run_duration_day)
+      chart: ${ref(tests_run_duration_day)}
   - height: small 
     items:
     - width: 1
-      chart: ref(tests_aggregates_last_7_days_chart)
+      chart: ${ref(tests_aggregates_last_7_days_chart)}
 
   - height: large
     items:
     - width: 1
-      table: ref(tests_last_7_days_table)
+      table: ${ref(tests_last_7_days_table)}
