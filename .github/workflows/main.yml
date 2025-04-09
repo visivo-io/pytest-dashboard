@@ -1,7 +1,7 @@
 name: Build and Deploy
 on:
   schedule:
-    - cron: "0 4 * * *" 
+    - cron: "0 4 * * *"
   push:
     branches:
       - main
@@ -14,17 +14,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Install Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10' 
+          python-version: "3.10"
 
       - name: Install and Build
         run: |
-          pip install visivo
+          pip install playwright
+          python -m playwright install webkit --with-deps
+          python -m pip install git+https://github.com/visivo-io/visivo.git@main
+          visivo run
           visivo dist
-          cp _redirects dist
         env:
           PYTEST_DB_PASSWORD: ${{secrets.PYTEST_DB_PASSWORD}}
           PYTEST_DB_USER: ${{secrets.PYTEST_DB_USER}}
@@ -35,11 +37,11 @@ jobs:
           PYTEST_DATABASE: ${{secrets.PYTEST_DATABASE}}
           PYTEST_TABLE: ${{secrets.PYTEST_TABLE}}
           PYTEST_TARGET: ${{secrets.PYTEST_TARGET}}
-          
+
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
-          publish-dir: './dist'
+          publish-dir: "./dist"
           production-deploy: true
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
